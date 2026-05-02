@@ -499,13 +499,23 @@
         function updateListDisplay() { document.getElementById('current-list-display').textContent = appState.lists[appState.activeListId]?.name || "Nenhuma"; }
         function showFeedback(msg) { const f = document.getElementById('feedback'); document.getElementById('feedback-text').textContent = msg; f.classList.remove('hidden'); setTimeout(()=>f.classList.add('hidden'), 2000); }
         function showErrorDialog(t, m) { document.getElementById('error-dialog-title').textContent = t; document.getElementById('error-dialog-message').textContent = m; document.getElementById('error-dialog-overlay').classList.remove('hidden'); }
-        function exportData() {
-            const items = appState.lists[appState.activeListId]?.items;
-            if (!items) return;
-            const txt = Object.entries(items).map(([code, qty]) => `${code},${qty}`).join('\n');
-            const url = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }));
-            const a = Object.assign(document.createElement('a'), { href: url, download: `${appState.activeListId}.txt` });
-            a.click();
+        async function exportData() {
+            const list = appState.lists[appState.activeListId];
+            if (!list?.items) return;
+            const txt = Object.entries(list.items).map(([code, qty]) => `${code},${qty}`).join('\n');
+            const fileName = `${list.name}.txt`;
+            const file = new File([txt], fileName, { type: 'text/plain' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({ files: [file], title: fileName });
+                } catch (e) {
+                    if (e.name !== 'AbortError') showErrorDialog('Erro', 'Não foi possível compartilhar o arquivo.');
+                }
+            } else {
+                const url = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }));
+                const a = Object.assign(document.createElement('a'), { href: url, download: fileName });
+                a.click();
+            }
         }
         function saveToStorage() { localStorage.setItem('scanner_pro_v2', JSON.stringify(appState)); }
         function loadFromStorage() {
