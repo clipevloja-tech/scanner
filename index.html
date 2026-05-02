@@ -503,7 +503,7 @@
             if (!items) return;
             const csv = "Código,Quantidade\n" + Object.entries(items).map(e => e.join(',')).join('\n');
             const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-            const a = Object.assign(document.createElement('a'), { href: url, download: `Export_${appState.activeListId}.csv` });
+            const a = Object.assign(document.createElement('a'), { href: url, download: `${appState.activeListId}.csv` });
             a.click();
         }
         function saveToStorage() { localStorage.setItem('scanner_pro_v2', JSON.stringify(appState)); }
