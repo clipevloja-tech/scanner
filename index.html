@@ -502,9 +502,9 @@
         function exportData() {
             const items = appState.lists[appState.activeListId]?.items;
             if (!items) return;
-            const csv = "Código,Quantidade\n" + Object.entries(items).map(e => e.join(',')).join('\n');
-            const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-            const a = Object.assign(document.createElement('a'), { href: url, download: `${appState.activeListId}.csv` });
+            const txt = Object.entries(items).map(([code, qty]) => `${code},${qty}`).join('\n');
+            const url = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }));
+            const a = Object.assign(document.createElement('a'), { href: url, download: `${appState.activeListId}.txt` });
             a.click();
         }
         function saveToStorage() { localStorage.setItem('scanner_pro_v2', JSON.stringify(appState)); }
