@@ -343,7 +343,7 @@
         function onScanSuccess(code) {
             const reader = document.getElementById('reader');
             reader.classList.add('scan-flash');
-            setTimeout(() => reader.classList.remove('scan-flash'), 400);
+            setTimeout(() => reader.classList.remove('scan-flash'), 2000);
 
             if (navigator.vibrate) navigator.vibrate(100);
             handleItemAdd(code);
